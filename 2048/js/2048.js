@@ -12,13 +12,14 @@ window.onload = function () {
 			40 : "down",
 		};
 		switch ( allowedKeys[e.keyCode] ) {
-			case 37 :
+			case "left" :
+			game.moveLeft();
 				break;
-			case 38 :
+			case "up" :
 				break;
-			case 39 : 
+			case "right" : 
 				break;
-			case 40 :
+			case "down" :
 				break;
 			default :
 			
@@ -114,4 +115,53 @@ var game = {
 	    score = doc.getElementById( "score" );
 		score.innerHTML = this.score;
 	},
+	/**
+	 * moveLeft 按下向左发生的事件
+	 */
+	moveLeft : function () {
+		var oldStr,
+			newStr;
+		// 先保存原数据
+		  oldStr = this.data.toString();
+		  for( var row = 0; row < this.r; row++ ){
+			  this.moveLeftInRow( row );
+		  }
+		  newStr = this.data.toString();
+		  if(oldStr !== newStr){
+			  this.randomNum();
+			  this.updateView();
+		  }
+	},
+	
+	moveLeftInRow : function ( row ) {
+		for ( var col = 0; col < this.c - 1; col++ ) {
+				/* 获得右边第一个不为0的数的下标 */
+				var nextc = this.getRightNext( row,col);
+				if ( nextc === -1) {
+					break; // 若右边没有不为0的数就跳出循环
+				} else {
+				   if ( this.data[row][col] == 0 ) {
+					// 将下一个位置的值，当入当前位置
+					this.data[row][col] = this.data[row][nextc];
+					this.data[row][nextc] = 0;
+					col--; //让col退一格，重复检查一次	
+				   }else if( this.data[row][col] === this.data[row][nextc] ){
+							//	将当前位置*=2;	
+							this.data[row][col] *= 2;
+							// 下个位置值为 0
+							this.data[row][nextc] = 0;
+							// 加入分数
+							this.score += this.data[row][col];
+					}
+				}
+			}
+	}, 
+	getRightNext : function ( row, col ) {
+		for ( var nextc = col+1; nextc < this.c; nextc++ ) {
+				if (this.data[row][nextc] !== 0 ) {
+					return nextc;
+				}
+		  }
+		  return -1;
+	}
 }
