@@ -3,9 +3,26 @@ window.onload = function () {
 	game.start(); // 开始游戏
 	
 	// 按钮按下事件
-	document.onkeydown = function () {
-		var event = window.event || arguments[0];
-		
+	document.onkeydown = function ( e ) {
+		var e = window.event || arguments[e];
+		var allowedKeys = {
+			37 : "left",
+			38 : "up",
+			39 : "right",
+			40 : "down",
+		};
+		switch ( allowedKeys[e.keyCode] ) {
+			case 37 :
+				break;
+			case 38 :
+				break;
+			case 39 : 
+				break;
+			case 40 :
+				break;
+			default :
+			
+		}
 	}
 }
 
@@ -96,5 +113,5 @@ var game = {
 		// 获得分数
 	    score = doc.getElementById( "score" );
 		score.innerHTML = this.score;
-	}
+	},
 }
