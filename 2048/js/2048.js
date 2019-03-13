@@ -3,8 +3,8 @@ window.onload = function () {
 	game.start(); // 开始游戏
 	
 	// 按钮按下事件
-	document.onkeydown = function ( e ) {
-		var e = window.event || arguments[e];
+	document.onkeydown = function (event) {
+		var e = window.event || event;
 		var allowedKeys = {
 			37 : "left",
 			38 : "up",
@@ -16,15 +16,19 @@ window.onload = function () {
 			game.moveLeft();
 				break;
 			case "up" :
+			game.moveUp();
 				break;
 			case "right" : 
+			game.moveRight();
 				break;
 			case "down" :
 				break;
+				game.moveDown();
 			default :
 			
 		}
 	}
+	
 }
 
 var game = {
@@ -132,7 +136,10 @@ var game = {
 			  this.updateView();
 		  }
 	},
-	
+	/**
+	 *  moveLeftInRow 获得当前行各各列坐标
+	 *	@param  {number}    当前的行号
+	 */
 	moveLeftInRow : function ( row ) {
 		for ( var col = 0; col < this.c - 1; col++ ) {
 				/* 获得右边第一个不为0的数的下标 */
@@ -145,7 +152,7 @@ var game = {
 					this.data[row][col] = this.data[row][nextc];
 					this.data[row][nextc] = 0;
 					col--; //让col退一格，重复检查一次	
-				   }else if( this.data[row][col] === this.data[row][nextc] ){
+				   } else if( this.data[row][col] === this.data[row][nextc] ){
 							//	将当前位置*=2;	
 							this.data[row][col] *= 2;
 							// 下个位置值为 0
@@ -156,6 +163,13 @@ var game = {
 				}
 			}
 	}, 
+	/**
+	 * getRightNext 获取当前右边不为空的值
+	 * @param {number} p1 当前的行号
+	 * @param {number} p2 当前的列号
+	 * @return {number} 后面不为空的列号或-1
+	 * 
+	 */
 	getRightNext : function ( row, col ) {
 		for ( var nextc = col+1; nextc < this.c; nextc++ ) {
 				if (this.data[row][nextc] !== 0 ) {
@@ -163,5 +177,63 @@ var game = {
 				}
 		  }
 		  return -1;
-	}
+	},
+	/**
+	 * moveRight 按下向右发生的事件
+	 */
+	moveRight : function () {
+		var oldStr,
+			newStr;
+		// 先保存原数据
+		  oldStr = this.data.toString();
+		  for ( var row = 0; row < this.r; row++ ) {
+			  this.moveRightInRow(row);
+		  }
+		  newStr = this.data.toString();
+		  if (oldStr !== newStr) {
+			  this.randomNum();
+			  this.updateView();
+		  }
+	},
+	/**
+	 * moveRightInRow 获取当前行的各列的的坐标
+	 * @param {number} 行号
+	 */
+	moveRightInRow : function (row) {
+		for (var col = this.c-1; col > 0; col--) {
+			var nextc = this.getLeftNext(row, col);
+			if (nextc === -1) {
+				break;
+			} else {
+				if (this.data[row][col] == 0) {
+					// 将下一个位置的值，当入当前位置
+					this.data[row][col] = this.data[row][nextc];
+					this.data[row][nextc] = 0;
+					col++; 
+				   } else if (this.data[row][col] === this.data[row][nextc]) {
+							//	将当前位置*=2;	
+							this.data[row][col] *= 2;
+							// 下个位置值为 0
+							this.data[row][nextc] = 0;
+							// 加入分数
+							this.score += this.data[row][col];
+					}
+			}
+		}
+	},
+	/**
+	 * getLeftNext 获取左边的不为0的数
+	 * @param {number} p1 为行号
+	 * @param {number} p2 为列号
+	 * @return {number} 返回不为空的列号或 -1
+	 */
+	getLeftNext : function (row, col) {
+		for (var nextc = col-1; nextc >=0; nextc--) {
+			if ( this.data[row][nextc] !== 0) {
+				return nextc;
+			}
+			
+		}
+		return -1;
+	} 
 }
