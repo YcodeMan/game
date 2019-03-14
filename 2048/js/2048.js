@@ -1,41 +1,33 @@
 
-window.onload = function () {
-	game.start(); // 开始游戏
+window.onload = function(){
+	game.start();  //开始游戏
 	
-	// 按钮按下事件
-	document.onkeydown = function (event) {
-		var e = window.event || event;
-		var allowedKeys = {
-			37 : "left",
-			38 : "up",
-			39 : "right",
-			40 : "down",
-		};
-		switch ( allowedKeys[e.keyCode] ) {
-			case "left" :
-			game.moveLeft();
-				break;
-			case "up" :
-			game.moveUp();
-				break;
-			case "right" : 
-			game.moveRight();
-				break;
-			case "down" :
-			game.moveDown();
-				break;	
-			default :
+	document.onkeydown = function (){
+		/* 按钮按下事件 */
+		if(game.state == game.RUNNING){
+			var e = window.event || arguments[0];
 			
+				if(e.keyCode == 37){ //按下 <-  键
+					game.moveLeft();
+				}else if(e.keyCode == 39){  // 按下 -> 键
+					game.moveRight();
+				}else if(e.keyCode == 38){
+					game.moveUp();
+				}else if(e.keyCode == 40){
+					game.moveDown();
+				}			
 		}
-	}
-	
-}
+	}  
+}	
 
 var game = {
 	data : [],  // 保存数字的二维数组
 	r : 4,		// 行数
 	c : 4,      // 列数
 	score : 0,
+	state: 0, //游戏当前状态：Running|GameOver
+	RUNNING:1,
+	GAMEOVER:0,
 	start : function () {
 		this.init();
 		this.randomNum();
@@ -54,9 +46,9 @@ var game = {
 				this.data[row][col] = 0;
 			}
 		}
-		
-		
-		
+		this.state = this.RUNNING;
+		var div = document.getElementById("gameOver");
+		div.style.display = "none";
 		this.score = 0;  //初始化分数
 	},
 	 /** 
@@ -118,6 +110,44 @@ var game = {
 		// 获得分数
 	    score = doc.getElementById( "score" );
 		score.innerHTML = this.score;
+		
+		if (this.isGameOver()) {
+			  this.state = this.GAMEOVER;
+			  var div = document.getElementById("gameOver");
+			  var span = document.getElementById("finalScore");
+			  // 获得最后的分数
+			  span.innerHTML = this.score;
+			  div.style.display = "block";
+		  }
+	},
+	/**
+	 * isGameOver 判断当前游戏是否结束
+	 * @return {Boolean} false 表示没有结束, true表示结束
+	 */
+	isGameOver:function(){
+		if(!this.isFull()){
+			return false;
+		}else{
+			for(var row = 0;row < this.rn; row++){
+			for(var col = 0;col < this.cn; col++){
+			//如果当前元素不是最右侧元素
+				if(col < this.cn -1){
+					//如果当前元素==右侧元素
+					if(this.data[row][col]==this.data[row][col+1]){
+							return false;
+					}
+				}
+					//如果当前元素不是最下方元素
+				if(row < this.rn-1){
+					//如果当前元素==下方元素
+					if(this.data[row][col] ==this.data[row+1][col]){
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
 	},
 	/**
 	 * moveLeft 按下向左发生的事件
