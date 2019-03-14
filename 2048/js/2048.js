@@ -232,8 +232,58 @@ var game = {
 			if ( this.data[row][nextc] !== 0) {
 				return nextc;
 			}
-			
 		}
 		return -1;
-	} 
+	},
+	/**
+	 * moveUp  按下向上键时发生的事件
+	 */
+	moveUp : function () {
+		var oldStr,
+			newStr;
+		// 先保存原数据
+		  oldStr = this.data.toString();
+		  for (var col = 0; col < this.c; col++) {
+			  this.moveUpInCol(col);
+		  }
+		  newStr = this.data.toString();
+		  if (oldStr !== newStr) {
+			  this.randomNum();
+			  this.updateView();
+		  }
+	},
+	/**
+	 * moveUpInCol 获取当前各列的行号
+	 * @param {number} 当前的列号
+	 */
+	moveUpInCol : function (col) {
+		for (var row = 0; row < this.r -1; row++ ) {
+			var nextc = this.getDownNext(row, col);
+			if (nextc === -1) {
+				break;
+			} else {
+				if (this.data[row][col] === 0) {
+					this.data[row][col] = this.data[nextc][col];
+					this.data[nextc][col] = 0;
+					row--;
+				} else if (this.data[row][col] === this.data[nextc][col]) {
+					this.data[row][col] *= 2;
+					this.data[nextc][col] = 0;
+					this.score += this.data[row][col];
+				}
+			}
+		}
+	},
+	/**
+	 * getDownNext 获取当前列的下一行不为0的行号
+	 */
+	getDownNext : function (row, col) {
+		for (var nextc = row + 1; nextc < this.r; nextc++) {
+			if (this.data[nextc][col] !==0 ) {
+				return nextc;
+			}
+		}
+		return -1;
+	},
+	
 }
