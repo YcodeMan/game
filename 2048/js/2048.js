@@ -22,8 +22,9 @@ window.onload = function () {
 			game.moveRight();
 				break;
 			case "down" :
+			game.moveDown();
 				break;
-				game.moveDown();
+				
 			default :
 			
 		}
@@ -285,5 +286,44 @@ var game = {
 		}
 		return -1;
 	},
-	
+	moveDown : function () {
+		var oldStr,
+			newStr;
+		// 先保存原数据
+		  oldStr = this.data.toString();
+		  for (var col = 0; col < this.c; col++) {
+			  this.moveDownInCol(col);
+		  }
+		  newStr = this.data.toString();
+		  if (oldStr !== newStr) {
+			  this.randomNum();
+			  this.updateView();
+		  }
+	},
+	moveDownInCol : function (col) {
+		for (var row = this.r -1; row > 0; row--) {
+			var nextc = this.getUpNext(row, col);
+			if (nextc === -1) {
+				break
+			} else {
+				if (this.data[row][col] === 0) {
+					this.data[row][col] = this.data[nextc][col];
+					this.data[nextc][col] = 0;
+					row++;
+				} else if (this.data[row][col] === this.data[nextc][col]) {
+					this.data[row][col] *= 2;
+					this.data[nextc][col] = 0;
+					this.score += this.data[row][col];
+				}
+			}
+		}
+	},
+	getUpNext : function (row, col) {
+		for (var nextc = row-1; nextc >= 0; nextc--) {
+			if (this.data[nextc][col] !== 0) {
+				return nextc;
+			}
+		}
+		return -1;
+	}
 }
