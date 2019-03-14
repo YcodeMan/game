@@ -23,8 +23,7 @@ window.onload = function () {
 				break;
 			case "down" :
 			game.moveDown();
-				break;
-				
+				break;	
 			default :
 			
 		}
@@ -286,6 +285,9 @@ var game = {
 		}
 		return -1;
 	},
+	/**
+	 * moveDown 按下向下键时发生的事件
+	 */
 	moveDown : function () {
 		var oldStr,
 			newStr;
@@ -300,6 +302,10 @@ var game = {
 			  this.updateView();
 		  }
 	},
+	/**
+	 * moveDownInCol 获取当前的行号
+	 * @param {number} 列号
+	 */
 	moveDownInCol : function (col) {
 		for (var row = this.r -1; row > 0; row--) {
 			var nextc = this.getUpNext(row, col);
@@ -318,6 +324,12 @@ var game = {
 			}
 		}
 	},
+	/**
+	 * getUpNext 获取不为空的行号
+	 * @param {number} 行号
+	 * @param {number} 列号
+	 * @return {number} 不为0的行号或者-1
+	 */
 	getUpNext : function (row, col) {
 		for (var nextc = row-1; nextc >= 0; nextc--) {
 			if (this.data[nextc][col] !== 0) {
