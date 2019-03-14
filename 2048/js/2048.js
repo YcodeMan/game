@@ -128,17 +128,17 @@ var game = {
 		if(!this.isFull()){
 			return false;
 		}else{
-			for(var row = 0;row < this.rn; row++){
-			for(var col = 0;col < this.cn; col++){
+			for(var row = 0;row < this.r; row++){
+			for(var col = 0;col < this.c; col++){
 			//如果当前元素不是最右侧元素
-				if(col < this.cn -1){
+				if(col < this.c -1){
 					//如果当前元素==右侧元素
 					if(this.data[row][col]==this.data[row][col+1]){
 							return false;
 					}
 				}
 					//如果当前元素不是最下方元素
-				if(row < this.rn-1){
+				if(row < this.r-1){
 					//如果当前元素==下方元素
 					if(this.data[row][col] ==this.data[row+1][col]){
 							return false;
