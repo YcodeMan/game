@@ -1,2 +1,2 @@
 # 2048
-This is 2048 game
+This is  web 2048 game
