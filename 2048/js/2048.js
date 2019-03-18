@@ -16,8 +16,8 @@ window.onload = function(){
 		}
 	}  
 }	
-
-var game = {
+var doc = document,
+	game = {
 	data : [],  // 保存数字的二维数组
 	r : 4,		// 行数
 	c : 4,      // 列数
@@ -43,7 +43,7 @@ var game = {
 			}
 		}
 		this.state = this.RUNNING;
-		var div = document.getElementById("gameOver");
+		var div = doc.getElementById("gameOver");
 		div.style.display = "none";
 		this.score = 0;  //初始化分数
 		
@@ -116,8 +116,7 @@ var game = {
 	 * updateView 修改数据
 	 */
 	updateView : function () {
-		var doc = document,
-			div,
+		var div,
 			curr,
 		    score;
 		for( var row = 0; row < this.r; row++ ) {
@@ -135,8 +134,8 @@ var game = {
 		score.innerHTML = this.score;
 		if (this.isGameOver()) {
 			  this.state = this.GAMEOVER;
-			  var div = document.getElementById("gameOver");
-			  var span = document.getElementById("finalScore");
+			  var div = doc.getElementById("gameOver");
+			  var span = doc.getElementById("finalScore");
 			  // 获得最后的分数
 			  span.innerHTML = this.score;
 			  div.style.display = "block";
