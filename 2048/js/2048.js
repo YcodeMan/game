@@ -69,7 +69,6 @@ var game = {
 	randomNum : function () {
 		if ( !this.isFull() ) {  // 先判断当前数组是否为空,是否可以生成数字放入
 			while ( true ) { // 循环获得一个空坐标
-			
 				// 随机从0-3中获得一个行号
 				var row = parseInt( Math.random() * this.r );
 				
@@ -175,54 +174,50 @@ var game = {
 				}
 			}
 	}, 
+	/**
+	 * setScore 方法获得分数
+	 * @param {number} p1 行号
+	 * @param {number} p2  列号
+	 * @param {number} p3  后一位数
+	 * @param {number} p4  键值
+	 */
 	setScore : function (row, col, nextc, keyCode) {
-		
 		switch (keyCode) {
 			case 37 :
-				this.isLeftOrRight(row, col, nextc, keyCode);
-					break;
 			case 39 :
-				this.isLeftOrRight(row, col, nextc, keyCode);
-					break;
+				if ( this.data[row][col] == 0 ) {
+					// 将下一个位置的值，当入当前位置
+					this.data[row][col] = this.data[row][nextc];
+					this.data[row][nextc] = 0;
+					keyCode === 37 ? col-- : col++;
+				} else if( this.data[row][nextc] === this.data[row][col] ){
+							//	将当前位置*=2;	
+					this.data[row][col] *= 2;
+							// 下个位置值为 0
+					this.data[row][nextc] = 0;
+							// 加入分数
+					this.score += this.data[row][col];
+				}
+			break;
 			case 38 :
-				this.isUpOrDown(row, col, nextc, keyCode);
-					break;
 			case 40 :
-				this.isUpOrDown(row, col, nextc, keyCode);
-					break;
-			default :
+				if ( this.data[row][col] == 0 ) {
+					// 将下一个位置的值，当入当前位置
+					this.data[row][col] = this.data[nextc][col];
+					this.data[nextc][col] = 0;
+					keyCode === 38 ? row-- : row++;
+				} else if( this.data[row][col] === this.data[nextc][col] ){
+							//	将当前位置*=2;	
+					this.data[row][col] *= 2;
+							// 下个位置值为 0
+					this.data[nextc][col] = 0;
+							// 加入分数
+					this.score += this.data[row][col];
+				}
+			break;
 		}
 	},
-	isLeftOrRight : function (row, col, nextc, keyCode) {
-		if ( this.data[row][col] == 0 ) {
-				// 将下一个位置的值，当入当前位置
-				this.data[row][col] = this.data[row][nextc];
-				this.data[row][nextc] = 0;
-				keyCode === 37 ? col-- : col++;
-			} else if( this.data[row][nextc] === this.data[row][col] ){
-						//	将当前位置*=2;	
-				this.data[row][col] *= 2;
-						// 下个位置值为 0
-				this.data[row][nextc] = 0;
-						// 加入分数
-				this.score += this.data[row][col];
-			}
-	},
-	isUpOrDown : function (row, col, nextc, keyCode) {
-		if ( this.data[row][col] == 0 ) {
-				// 将下一个位置的值，当入当前位置
-				this.data[row][col] = this.data[nextc][col];
-				this.data[nextc][col] = 0;
-				keyCode === 38 ? row-- : row++;
-			} else if( this.data[row][col] === this.data[nextc][col] ){
-						//	将当前位置*=2;	
-				this.data[row][col] *= 2;
-						// 下个位置值为 0
-				this.data[nextc][col] = 0;
-						// 加入分数
-				this.score += this.data[row][col];
-			}
-	},
+	
 	/**
 	 * getRightNext 获取当前右边不为空的值
 	 * @param {number} p1 当前的行号
