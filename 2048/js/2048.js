@@ -1,20 +1,19 @@
-
 window.onload = function(){
 	game.start();  //开始游戏
 	
-	document.onkeydown = function (){
+	document.onkeydown = function (event){
 		/* 按钮按下事件 */
 		if(game.state == game.RUNNING){
-			var e = window.event || arguments[0];
+			var e = window.event || event;
 			
 				if(e.keyCode == 37){ //按下 <-  键
-					game.moveLeft();
+					game.moveLeft(37);
 				}else if(e.keyCode == 39){  // 按下 -> 键
-					game.moveRight();
+					game.moveRight(39);
 				}else if(e.keyCode == 38){
-					game.moveUp();
+					game.moveUp(38);
 				}else if(e.keyCode == 40){
-					game.moveDown();
+					game.moveDown(40);
 				}			
 		}
 	}  
@@ -50,6 +49,7 @@ var game = {
 		var div = document.getElementById("gameOver");
 		div.style.display = "none";
 		this.score = 0;  //初始化分数
+		
 	},
 	 /** 
 	  * isFull 判断二维数组中是否空
@@ -88,6 +88,35 @@ var game = {
 		}
 	},
 	/**
+	 * isGameOver 判断当前游戏是否结束
+	 * @return {Boolean} false 表示没有结束, true表示结束
+	 */
+	isGameOver:function(){
+		if(!this.isFull()){
+			return false;
+		}else{
+			for(var row = 0;row < this.r; row++){
+			for(var col = 0;col < this.c; col++){
+			//如果当前元素不是最右侧元素
+				if(col < this.c -1){
+					//如果当前元素==右侧元素
+					if(this.data[row][col]==this.data[row][col+1]){
+							return false;
+					}
+				}
+					//如果当前元素不是最下方元素
+				if(row < this.r-1){
+					//如果当前元素==下方元素
+					if(this.data[row][col] ==this.data[row+1][col]){
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
+	},
+	/**
 	 * updateView 修改数据
 	 */
 	updateView : function () {
@@ -121,44 +150,15 @@ var game = {
 		  }
 	},
 	/**
-	 * isGameOver 判断当前游戏是否结束
-	 * @return {Boolean} false 表示没有结束, true表示结束
-	 */
-	isGameOver:function(){
-		if(!this.isFull()){
-			return false;
-		}else{
-			for(var row = 0;row < this.r; row++){
-			for(var col = 0;col < this.c; col++){
-			//如果当前元素不是最右侧元素
-				if(col < this.c -1){
-					//如果当前元素==右侧元素
-					if(this.data[row][col]==this.data[row][col+1]){
-							return false;
-					}
-				}
-					//如果当前元素不是最下方元素
-				if(row < this.r-1){
-					//如果当前元素==下方元素
-					if(this.data[row][col] ==this.data[row+1][col]){
-							return false;
-						}
-					}
-				}
-			}
-			return true;
-		}
-	},
-	/**
 	 * moveLeft 按下向左发生的事件
 	 */
-	moveLeft : function () {
+	moveLeft : function (keyCode) {
 		var oldStr,
 			newStr;
 		// 先保存原数据
 		  oldStr = this.data.toString();
 		  for( var row = 0; row < this.r; row++ ){
-			  this.moveLeftInRow( row );
+			  this.moveLeftInRow( row, keyCode );
 		  }
 		  newStr = this.data.toString();
 		  if(oldStr !== newStr){
@@ -170,29 +170,68 @@ var game = {
 	 *  moveLeftInRow 获得当前行各各列坐标
 	 *	@param  {number}    当前的行号
 	 */
-	moveLeftInRow : function ( row ) {
+	moveLeftInRow : function ( row, keyCode ) {
 		for ( var col = 0; col < this.c - 1; col++ ) {
 				/* 获得右边第一个不为0的数的下标 */
 				var nextc = this.getRightNext( row,col);
 				if ( nextc === -1) {
 					break; // 若右边没有不为0的数就跳出循环
 				} else {
-				   if ( this.data[row][col] == 0 ) {
-					// 将下一个位置的值，当入当前位置
-					this.data[row][col] = this.data[row][nextc];
-					this.data[row][nextc] = 0;
-					col--; //让col退一格，重复检查一次	
-				   } else if( this.data[row][col] === this.data[row][nextc] ){
-							//	将当前位置*=2;	
-							this.data[row][col] *= 2;
-							// 下个位置值为 0
-							this.data[row][nextc] = 0;
-							// 加入分数
-							this.score += this.data[row][col];
-					}
+					this.setScore(row, col, nextc, keyCode);
 				}
 			}
 	}, 
+	setScore : function (row, col, nextc, keyCode) {
+		
+		switch (keyCode) {
+			case 37 :
+				this.isLeftOrRight(row, col, nextc, keyCode);
+					break;
+			case 39 :
+				this.isLeftOrRight(row, col, nextc, keyCode);
+					break;
+			case 38 :
+				this.isUpOrDown(row, col, nextc, keyCode);
+					break;
+			case 40 :
+				this.isUpOrDown(row, col, nextc, keyCode);
+					break;
+			default :
+		}
+	  
+			
+		
+	},
+	isLeftOrRight : function (row, col, nextc, keyCode) {
+		if ( this.data[row][col] == 0 ) {
+				// 将下一个位置的值，当入当前位置
+				this.data[row][col] = this.data[row][nextc];
+				this.data[row][nextc] = 0;
+				keyCode === 37 ? col-- : col++;
+			} else if( this.data[row][nextc] === this.data[row][col] ){
+						//	将当前位置*=2;	
+				this.data[row][col] *= 2;
+						// 下个位置值为 0
+				this.data[row][nextc] = 0;
+						// 加入分数
+				this.score += this.data[row][col];
+			}
+	},
+	isUpOrDown : function (row, col, nextc, keyCode) {
+		if ( this.data[row][col] == 0 ) {
+				// 将下一个位置的值，当入当前位置
+				this.data[row][col] = this.data[nextc][col];
+				this.data[nextc][col] = 0;
+				keyCode === 38 ? row-- : row++;
+			} else if( this.data[row][col] === this.data[nextc][col] ){
+						//	将当前位置*=2;	
+				this.data[row][col] *= 2;
+						// 下个位置值为 0
+				this.data[nextc][col] = 0;
+						// 加入分数
+				this.score += this.data[row][col];
+			}
+	},
 	/**
 	 * getRightNext 获取当前右边不为空的值
 	 * @param {number} p1 当前的行号
@@ -211,13 +250,13 @@ var game = {
 	/**
 	 * moveRight 按下向右发生的事件
 	 */
-	moveRight : function () {
+	moveRight : function (keyCode) {
 		var oldStr,
 			newStr;
 		// 先保存原数据
 		  oldStr = this.data.toString();
 		  for ( var row = 0; row < this.r; row++ ) {
-			  this.moveRightInRow(row);
+			  this.moveRightInRow(row, keyCode);
 		  }
 		  newStr = this.data.toString();
 		  if (oldStr !== newStr) {
@@ -229,25 +268,13 @@ var game = {
 	 * moveRightInRow 获取当前行的各列的的坐标
 	 * @param {number} 行号
 	 */
-	moveRightInRow : function (row) {
+	moveRightInRow : function (row, keyCode) {
 		for (var col = this.c-1; col > 0; col--) {
 			var nextc = this.getLeftNext(row, col);
 			if (nextc === -1) {
 				break;
 			} else {
-				if (this.data[row][col] == 0) {
-					// 将下一个位置的值，当入当前位置
-					this.data[row][col] = this.data[row][nextc];
-					this.data[row][nextc] = 0;
-					col++; 
-				   } else if (this.data[row][col] === this.data[row][nextc]) {
-							//	将当前位置*=2;	
-							this.data[row][col] *= 2;
-							// 下个位置值为 0
-							this.data[row][nextc] = 0;
-							// 加入分数
-							this.score += this.data[row][col];
-					}
+				this.setScore(row, col, nextc, keyCode);
 			}
 		}
 	},
@@ -268,13 +295,13 @@ var game = {
 	/**
 	 * moveUp  按下向上键时发生的事件
 	 */
-	moveUp : function () {
+	moveUp : function (keyCode) {
 		var oldStr,
 			newStr;
 		// 先保存原数据
 		  oldStr = this.data.toString();
 		  for (var col = 0; col < this.c; col++) {
-			  this.moveUpInCol(col);
+			  this.moveUpInCol(col, keyCode);
 		  }
 		  newStr = this.data.toString();
 		  if (oldStr !== newStr) {
@@ -286,21 +313,13 @@ var game = {
 	 * moveUpInCol 获取当前各列的行号
 	 * @param {number} 当前的列号
 	 */
-	moveUpInCol : function (col) {
+	moveUpInCol : function (col, keyCode) {
 		for (var row = 0; row < this.r -1; row++ ) {
 			var nextc = this.getDownNext(row, col);
 			if (nextc === -1) {
 				break;
 			} else {
-				if (this.data[row][col] === 0) {
-					this.data[row][col] = this.data[nextc][col];
-					this.data[nextc][col] = 0;
-					row--;
-				} else if (this.data[row][col] === this.data[nextc][col]) {
-					this.data[row][col] *= 2;
-					this.data[nextc][col] = 0;
-					this.score += this.data[row][col];
-				}
+				this.setScore(row, col, nextc, keyCode);
 			}
 		}
 	},
@@ -318,13 +337,13 @@ var game = {
 	/**
 	 * moveDown 按下向下键时发生的事件
 	 */
-	moveDown : function () {
+	moveDown : function (keyCode) {
 		var oldStr,
 			newStr;
 		// 先保存原数据
 		  oldStr = this.data.toString();
 		  for (var col = 0; col < this.c; col++) {
-			  this.moveDownInCol(col);
+			  this.moveDownInCol(col, keyCode);
 		  }
 		  newStr = this.data.toString();
 		  if (oldStr !== newStr) {
@@ -336,21 +355,13 @@ var game = {
 	 * moveDownInCol 获取当前的行号
 	 * @param {number} 列号
 	 */
-	moveDownInCol : function (col) {
+	moveDownInCol : function (col, keyCode) {
 		for (var row = this.r -1; row > 0; row--) {
 			var nextc = this.getUpNext(row, col);
 			if (nextc === -1) {
-				break
+				break;
 			} else {
-				if (this.data[row][col] === 0) {
-					this.data[row][col] = this.data[nextc][col];
-					this.data[nextc][col] = 0;
-					row++;
-				} else if (this.data[row][col] === this.data[nextc][col]) {
-					this.data[row][col] *= 2;
-					this.data[nextc][col] = 0;
-					this.score += this.data[row][col];
-				}
+				this.setScore(row, col, nextc, keyCode);
 			}
 		}
 	},
