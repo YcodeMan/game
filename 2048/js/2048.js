@@ -1,11 +1,9 @@
 window.onload = function(){
-	game.start();  //开始游戏
-	
+	game.start();  //开始游戏	
 	document.onkeydown = function (event){
 		/* 按钮按下事件 */
 		if(game.state == game.RUNNING){
 			var e = window.event || event;
-			
 				if(e.keyCode == 37){ //按下 <-  键
 					game.moveLeft(37);
 				}else if(e.keyCode == 39){  // 按下 -> 键
@@ -32,7 +30,6 @@ var game = {
 		this.randomNum();
 		this.randomNum();
 		this.updateView();
-		
 	},
 	/**
 	 * 初始化二维数组,分数
@@ -139,7 +136,6 @@ var game = {
 		// 获得分数
 	    score = doc.getElementById( "score" );
 		score.innerHTML = this.score;
-		
 		if (this.isGameOver()) {
 			  this.state = this.GAMEOVER;
 			  var div = document.getElementById("gameOver");
@@ -198,9 +194,6 @@ var game = {
 					break;
 			default :
 		}
-	  
-			
-		
 	},
 	isLeftOrRight : function (row, col, nextc, keyCode) {
 		if ( this.data[row][col] == 0 ) {
