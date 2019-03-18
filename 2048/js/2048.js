@@ -125,10 +125,8 @@ var game = {
 			for (var col = 0; col < this.c; col++ ) {
 				div = doc.getElementById( "c" + row + col );
 				curr = this.data[row][col];
-				
 				// 获取相应的值
 				div.innerHTML = curr !== 0 ? curr : ""; 
-				
 				// 添加相应的class
 				div.className = curr !== 0 ? "cell n" + curr : "cell";
 			}	
