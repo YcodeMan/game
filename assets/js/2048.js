@@ -287,6 +287,8 @@
 	},
 	/**
 	 * getDownNext 获取当前列的下一行不为0的行号
+	 * @param {number} 行号
+	 * @param {number} 列号
 	 */
 	getDownNext : function (row, col) {
 		for (var nextc = row + 1; nextc < this.r; nextc++) {
