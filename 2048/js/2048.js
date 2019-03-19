@@ -5,19 +5,14 @@
 	doc.onkeydown = function (event){
 		/* 按钮按下事件 */
 		if(game.state == game.RUNNING){
-			var e = win.event || event;		
-				switch (e.keyCode) {
-					case 37 :
-						game.moveLeft(37);
-						break;
-					case 39 :
-						game.moveRight(39);
-						break;
-					case 38 :
-						game.moveUp(38);
-						break;
+			var e = win.event || event,
+				keyCode = e.keyCode;
+				switch (keyCode) {
+					case 37 :	
+					case 39 :	
+					case 38 :	
 					case 40 :
-						game.moveDown(40);
+					game.move(keyCode);
 						break;
 				}
 		}
@@ -148,24 +143,9 @@
 			  div.style.display = "block";
 		  }
 	},
-	/**
-	 * moveLeft 按下向左发生的事件
-	 */
-	moveLeft : function (keyCode) {
-		var oldStr,
-			newStr;
-		// 先保存原数据
-		  oldStr = this.data.toString();
-		  for( var row = 0; row < this.r; row++ ){
-			  this.moveLeftInRow( row, keyCode );
-		  }
-		  newStr = this.data.toString();
-		  if(oldStr !== newStr){
-			  this.randomNum();
-			  this.updateView();
-		  }
-	},
-	/**
+	
+	
+	/*
 	 *  moveLeftInRow 获得当前行各各列坐标
 	 *	@param  {number}    当前的行号
 	 */
@@ -239,19 +219,26 @@
 		  }
 		  return -1;
 	},
-	/**
-	 * moveRight 按下向右发生的事件
-	 */
-	moveRight : function (keyCode) {
+	move : function (keyCode) {
 		var oldStr,
-			newStr;
-		// 先保存原数据
-		  oldStr = this.data.toString();
-		  for ( var row = 0; row < this.r; row++ ) {
-			  this.moveRightInRow(row, keyCode);
-		  }
-		  newStr = this.data.toString();
-		  if (oldStr !== newStr) {
+		    newStr;
+			oldStr = this.data.toString();
+			switch (keyCode) {
+				case 37 :
+				case 39 :
+					for (var row = 0; row < this.r; row++) {
+						keyCode == 39 ? this.moveRightInRow(row, keyCode) : this.moveLeftInRow(row, keyCode);
+					}
+					break;
+				case 38 :
+				case 40 :
+					for (var col = 0; col < this.c; col++) {
+						keyCode == 38 ? this.moveUpInCol(col, keyCode) : this.moveDownInCol(col, keyCode);
+					}
+					break;
+			}
+			newStr = this.data.toString();
+			if (oldStr !== newStr) {
 			  this.randomNum();
 			  this.updateView();
 		  }
@@ -285,23 +272,6 @@
 		return -1;
 	},
 	/**
-	 * moveUp  按下向上键时发生的事件
-	 */
-	moveUp : function (keyCode) {
-		var oldStr,
-			newStr;
-		// 先保存原数据
-		  oldStr = this.data.toString();
-		  for (var col = 0; col < this.c; col++) {
-			  this.moveUpInCol(col, keyCode);
-		  }
-		  newStr = this.data.toString();
-		  if (oldStr !== newStr) {
-			  this.randomNum();
-			  this.updateView();
-		  }
-	},
-	/**
 	 * moveUpInCol 获取当前各列的行号
 	 * @param {number} 当前的列号
 	 */
@@ -325,23 +295,6 @@
 			}
 		}
 		return -1;
-	},
-	/**
-	 * moveDown 按下向下键时发生的事件
-	 */
-	moveDown : function (keyCode) {
-		var oldStr,
-			newStr;
-		// 先保存原数据
-		  oldStr = this.data.toString();
-		  for (var col = 0; col < this.c; col++) {
-			  this.moveDownInCol(col, keyCode);
-		  }
-		  newStr = this.data.toString();
-		  if (oldStr !== newStr) {
-			  this.randomNum();
-			  this.updateView();
-		  }
 	},
 	/**
 	 * moveDownInCol 获取当前的行号
