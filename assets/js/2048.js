@@ -217,6 +217,7 @@
 		  return -1;
 	},
 	/**
+	 * move 根据键值的不同移动不同的方向
 	 * @param {number} 键值
 	 */
 	move : function (keyCode) {
