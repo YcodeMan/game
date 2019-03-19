@@ -2,11 +2,10 @@
 	
 	win.onload = function(){
 	game.start();  //开始游戏	
-	document.onkeydown = function (event){
+	doc.onkeydown = function (event){
 		/* 按钮按下事件 */
 		if(game.state == game.RUNNING){
-
-			var e = window.event || event;		
+			var e = win.event || event;		
 				switch (e.keyCode) {
 					case 37 :
 						game.moveLeft(37);
@@ -21,7 +20,6 @@
 						game.moveDown(40);
 						break;
 				}
-
 		}
 	}  
 }	
