@@ -1,9 +1,11 @@
-window.onload = function(){
+(function (win, doc) {
+	
+	win.onload = function(){
 	game.start();  //开始游戏	
 	document.onkeydown = function (event){
 		/* 按钮按下事件 */
 		if(game.state == game.RUNNING){
-			var e = window.event || event;
+			var e = win.event || event;
 				if(e.keyCode == 37){ //按下 <-  键
 					game.moveLeft(37);
 				}else if(e.keyCode == 39){  // 按下 -> 键
@@ -16,7 +18,7 @@ window.onload = function(){
 		}
 	}  
 }	
-var doc = document,
+
 	game = {
 	data : [],  // 保存数字的二维数组
 	r : 4,		// 行数
@@ -365,3 +367,5 @@ var doc = document,
 		return -1;
 	}
 }
+	
+})(window, document);
