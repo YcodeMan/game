@@ -3,16 +3,21 @@ window.onload = function(){
 	document.onkeydown = function (event){
 		/* 按钮按下事件 */
 		if(game.state == game.RUNNING){
-			var e = window.event || event;
-				if(e.keyCode == 37){ //按下 <-  键
-					game.moveLeft(37);
-				}else if(e.keyCode == 39){  // 按下 -> 键
-					game.moveRight(39);
-				}else if(e.keyCode == 38){
-					game.moveUp(38);
-				}else if(e.keyCode == 40){
-					game.moveDown(40);
-				}			
+			var e = window.event || event;		
+				switch (e.keyCode) {
+					case 37 :
+						game.moveLeft(37);
+						break;
+					case 39 :
+						game.moveRight(39);
+						break;
+					case 38 :
+						game.moveUp(38);
+						break;
+					case 40 :
+						game.moveDown(40);
+						break;
+				}
 		}
 	}  
 }	
