@@ -21,9 +21,18 @@
 			if (ele.addEventListener) {
 				ele.addEventListener(type, handler);
 			} else if (ele.attachEvent) {
-				ele.attachEvent("on" + type, handler);
+				ele.attachEvent('on' + type, handler);
 			} else {
 				ele['on' + type] = handler;
+			}
+		},
+		removeHandler : function (ele, type, handler) {
+			if (ele.removeEventListener) {
+				ele.removeEventListener(type, handler);
+			} else if (ele.detachEvent) {
+				ele.detachEvent('on' + type, handler);
+			} else {
+				ele['on' + type] = null
 			}
 		}
 	}
@@ -33,34 +42,49 @@
 		endY,
 		deltaX,
 		deltaY;
-	EventUtil.addHandler(doc, 'touchstart', function (event) {
-		startX = event.touches[0].pageX;
-		startY = event.touches[0].pageY;
-	});
-	EventUtil.addHandler(doc, 'touchend', function (event) {
-		event.preventDefault();
-		endX = event.changedTouches[0].pageX;
-		endY = event.changedTouches[0].pageY;
-		
-		deltaX = endX - startX;
-		deltaY = endY - startY;
-		
-		if (Math.abs(deltaX) > Math.abs(deltaY)) {  // 若水平距离大于垂直距离，认为是左右运动
-			if (deltaX > 30) {
-				game.move(39);  // 向右滑动
-			} else if (deltaX < -30) {
-				game.move(37);  // 向左滑动
-			}
-		} else {
-			if (deltaY > 30) {
-				game.move(40);   // 向下滑动
-			} else if (deltaY < -30) {
-				game.move(38)    // 向上滑动
-			}
-		}
-	});
+			EventUtil.addHandler(doc, 'touchstart', function (event) {
+				if (game.state === game.RUNNING) {
+					startX = event.touches[0].pageX;
+					startY = event.touches[0].pageY;
+				} else {
+					// removeHandler
+				}
+		});
 	
-}	
+		EventUtil.addHandler(doc, 'touchend', function (event) {
+			if (game.state === game.RUNNING) { 
+
+				event.preventDefault();
+				endX = event.changedTouches[0].pageX;
+				endY = event.changedTouches[0].pageY;
+				
+				deltaX = endX - startX;
+				deltaY = endY - startY;
+				
+				if (Math.abs(deltaX) > Math.abs(deltaY)) {  // 若水平距离大于垂直距离，认为是左右运动
+					if (deltaX > 30) {
+						game.move(39);  // 向右滑动
+					} else if (deltaX < -30) {
+						game.move(37);  // 向左滑动
+					}
+				} else {
+					if (deltaY > 30) {
+						game.move(40);   // 向下滑动
+					} else if (deltaY < -30) {
+						game.move(38)    // 向上滑动
+					}
+				}
+			
+			} else {
+					// removeHandler
+				}	
+			
+	});
+		
+	
+	
+};
+	
 	game = {
 	data : [],  // 保存数字的二维数组
 	r : 4,		// 行数
