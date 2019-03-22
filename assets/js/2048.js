@@ -218,11 +218,8 @@
 		for ( var col = 0; col < this.c - 1; col++ ) {
 				/* 获得右边第一个不为0的数的下标 */
 				var nextc = this.getRightNext( row,col);
-				if ( nextc === -1) {
-					break; // 若右边没有不为0的数就跳出循环
-				} else {
-					this.setScore(row, col, nextc, keyCode);
-				}
+				this.setScore(row, col, nextc, keyCode);
+				
 			}
 	}, 
 	/**
@@ -233,39 +230,43 @@
 	 * @param {number} p4  键值
 	 */
 	setScore : function (row, col, nextc, keyCode) {
-		switch (keyCode) {
-			case 37 :
-			case 39 :
-				if ( this.data[row][col] == 0 ) {
-					// 将下一个位置的值，当入当前位置
-					this.data[row][col] = this.data[row][nextc];
-					this.data[row][nextc] = 0;
-					keyCode === 37 ? col-- : col++;
-				} else if( this.data[row][nextc] === this.data[row][col] ){
-							//	将当前位置*=2;	
-					this.data[row][col] *= 2;
-							// 下个位置值为 0
-					this.data[row][nextc] = 0;
-							// 加入分数
-					this.score += this.data[row][col];
-				}
-			break;
-			case 38 :
-			case 40 :
-				if ( this.data[row][col] == 0 ) {
-					// 将下一个位置的值，当入当前位置
-					this.data[row][col] = this.data[nextc][col];
-					this.data[nextc][col] = 0;
-					keyCode === 38 ? row-- : row++;
-				} else if( this.data[row][col] === this.data[nextc][col] ){
-							//	将当前位置*=2;	
-					this.data[row][col] *= 2;
-							// 下个位置值为 0
-					this.data[nextc][col] = 0;
-							// 加入分数
-					this.score += this.data[row][col];
-				}
-			break;
+		if (nextc === -1) {
+			return;
+		} else {
+			switch (keyCode) {
+				case 37 :
+				case 39 :
+					if ( this.data[row][col] == 0 ) {
+						// 将下一个位置的值，当入当前位置
+						this.data[row][col] = this.data[row][nextc];
+						this.data[row][nextc] = 0;
+						keyCode === 37 ? col-- : col++;
+					} else if( this.data[row][nextc] === this.data[row][col] ){
+								//	将当前位置*=2;	
+						this.data[row][col] *= 2;
+								// 下个位置值为 0
+						this.data[row][nextc] = 0;
+								// 加入分数
+						this.score += this.data[row][col];
+					}
+				break;
+				case 38 :
+				case 40 :
+					if ( this.data[row][col] == 0 ) {
+						// 将下一个位置的值，当入当前位置
+						this.data[row][col] = this.data[nextc][col];
+						this.data[nextc][col] = 0;
+						keyCode === 38 ? row-- : row++;
+					} else if( this.data[row][col] === this.data[nextc][col] ){
+								//	将当前位置*=2;	
+						this.data[row][col] *= 2;
+								// 下个位置值为 0
+						this.data[nextc][col] = 0;
+								// 加入分数
+						this.score += this.data[row][col];
+					}
+				break;
+			}
 		}
 	},
 	
@@ -319,11 +320,7 @@
 	moveRightInRow : function (row, keyCode) {
 		for (var col = this.c-1; col > 0; col--) {
 			var nextc = this.getLeftNext(row, col);
-			if (nextc === -1) {
-				break;
-			} else {
-				this.setScore(row, col, nextc, keyCode);
-			}
+			this.setScore(row, col, nextc, keyCode);
 		}
 	},
 	/**
@@ -347,11 +344,7 @@
 	moveUpInCol : function (col, keyCode) {
 		for (var row = 0; row < this.r -1; row++ ) {
 			var nextc = this.getDownNext(row, col);
-			if (nextc === -1) {
-				break;
-			} else {
-				this.setScore(row, col, nextc, keyCode);
-			}
+			this.setScore(row, col, nextc, keyCode);
 		}
 	},
 	/**
@@ -374,11 +367,8 @@
 	moveDownInCol : function (col, keyCode) {
 		for (var row = this.r -1; row > 0; row--) {
 			var nextc = this.getUpNext(row, col);
-			if (nextc === -1) {
-				break;
-			} else {
-				this.setScore(row, col, nextc, keyCode);
-			}
+			this.setScore(row, col, nextc, keyCode);
+			
 		}
 	},
 	/**
