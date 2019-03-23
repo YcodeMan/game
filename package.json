@@ -18,6 +18,8 @@
   "homepage": "https://github.com/YcodeMan/2048#readme",
   "devDependencies": {
     "chai": "^4.1.2",
+    "jsdom": "14.0.0",
+    "jsdom-global": "3.0.2",
     "mocha": "^5.2.0"
   }
 }

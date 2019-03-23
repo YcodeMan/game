@@ -85,7 +85,7 @@
 	
 };
 	
-	game = {
+var	game = {
 	data : [],  // 保存数字的二维数组
 	r : 4,		// 行数
 	c : 4,      // 列数
@@ -385,5 +385,9 @@
 		}
 		return -1;
 	}
+}
+ function add(x, y) {
+	return x + y
 }	
+module.exports = game;
 })(window, document);
